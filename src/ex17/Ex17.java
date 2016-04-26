@@ -78,50 +78,73 @@ public class Ex17 {
 		Node noChoice = new Node(new ArrayList<Integer>(0), new ArrayList<Integer>(1), 1, 0, 0);
 		noChoice.getItemsIgnored().add(1);
 		Node choice = new Node(new ArrayList<Integer>(1), new ArrayList<Integer>(0), 1, table[0][0], table[0][1]);
+		Node qChoice = null;
 		choice.getItemsChosen().add(1);
 		int level = 1;
 		PriorityQueue<Node> q = new PriorityQueue<>();
-		boolean done = false;
-		while(!done) {
-			if(noChoice.getWeight() <= weightCapacity) {
-				q.add(noChoice);
+		while(true) {
+			// No choice option
+			if(noChoice.getWeight() < weightCapacity) {
 				calculateBound(noChoice);
+				sb.append("\nLeft child is ");
+				sb.append(noChoice);
+				q.add(noChoice);
+				sb.append("\n  Explore Further");
+			} else if (noChoice.getWeight() == weightCapacity){
+				sb.append("\n Hit capacity exactly, so don't explore further");
+			} else {
+				sb.append("\n  Pruned becuase too heavy");
 			}
+			
+			// choice option
 			if(choice.getWeight() <= weightCapacity) {
-				q.add(choice);
 				calculateBound(choice);
+				sb.append("\nRight child is ");
+				sb.append(choice);
+				q.add(choice);
+			} else if (choice.getWeight() == weightCapacity){
+				sb.append("\n Hit capacity exactly, so don't explore further");
+			} else {
+				sb.append("\n  Pruned becuase too heavy");
 			}
 			
 			// Pursue highest bound
-			// TODO This condition needs to be getting highest bound from queue
-			if(choice.getBound() > noChoice.getBound()) {
-				ArrayList<Integer> temp;
-				Node newC = null;
-				Node newNC = null;
-				level = choice.getLevel() + 1;
-				int newProfit = 0;
-				int newWeight = 0;
-				
-				// Create new no choice node
-				newNC = new Node(choice.getItemsChosen(), null, level, choice.getProfit(), choice.getWeight());
-				temp = new ArrayList<>(choice.getItemsIgnored());
-				temp.add(level);
-				newNC.setItemsIgnored(temp);
-				
-				// Create new choice node
-				newProfit = choice.getProfit() + table[level - 1][0];
-				newWeight = choice.getWeight() + table[level - 1][1];
-				newC = new Node(null, choice.getItemsIgnored(), level, newProfit, newWeight);
-				temp = new ArrayList<>(choice.getItemsChosen());
-				temp.add(level);
-				newC.setItemsChosen(temp);
-				
-				// reset choices
-				choice = newC;
-				noChoice = newNC;
-			} else {
-				
+			qChoice = q.remove();
+			sb.append("\n  Pursue higher bound Node ");
+			sb.append(qChoice.getThisCount());
+			sb.append("\n");
+			
+			if(qChoice.getLevel() == table.length) {
+				sb.append("\nWINNER: ");
+				sb.append(qChoice);
+				System.out.println(sb);
+				break;
 			}
+			
+			level = qChoice.getLevel() + 1;
+			
+			// Create new no choice node
+			ArrayList<Integer> temp;
+			Node newC = null;
+			Node newNC = null;
+			int newProfit = 0;
+			int newWeight = 0;
+			newNC = new Node(qChoice.getItemsChosen(), null, level, qChoice.getProfit(), qChoice.getWeight());
+			temp = new ArrayList<>(qChoice.getItemsIgnored());
+			temp.add(level);
+			newNC.setItemsIgnored(temp);
+			
+			// Create new choice node
+			newProfit = qChoice.getProfit() + table[level - 1][0];
+			newWeight = qChoice.getWeight() + table[level - 1][1];
+			newC = new Node(null, qChoice.getItemsIgnored(), level, newProfit, newWeight);
+			temp = new ArrayList<>(qChoice.getItemsChosen());
+			temp.add(level);
+			newC.setItemsChosen(temp);
+			
+			// reset choices
+			choice = newC;
+			noChoice = newNC;
 		}
 	}
 	
@@ -152,6 +175,13 @@ public class Ex17 {
 		if(node != null) {
 			ArrayList<Integer> chosen = node.getItemsChosen();
 			ArrayList<Integer> ignored = node.getItemsIgnored();
+			
+			// Set bound to profit if all items are handled
+			if(chosen.size() + ignored.size() == table.length) {
+				node.setBound(node.getProfit());
+				return;
+			}
+			
 			boolean skipItem = false;
 			int bound = node.getProfit();
 			int totalWeight = node.getWeight();

@@ -42,7 +42,7 @@ public class Node implements Comparable<Node> {
 
 	@Override
 	public String toString() {
-		return "<Node " + thisCount + " items: [" + itemsChosen.size() + "] level: " + level + " profit: " + profit + " weight: " + weight + " bound: " + bound + ">";
+		return "<Node " + thisCount + " items: " + itemsChosen + " level: " + level + " profit: " + profit + " weight: " + weight + " bound: " + bound + ">";
 	}
 	
 	public int getProfit() {
@@ -81,6 +81,10 @@ public class Node implements Comparable<Node> {
 		return level;
 	}
 
+	public int getThisCount() {
+		return thisCount;
+	}
+	
 	public void setItemsChosen(ArrayList<Integer> itemsChosen) {
 		this.itemsChosen = itemsChosen;
 	}
@@ -91,5 +95,9 @@ public class Node implements Comparable<Node> {
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public void setThisCount(int thisCount) {
+		this.thisCount = thisCount;
 	}
 }
