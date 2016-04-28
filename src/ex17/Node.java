@@ -42,7 +42,7 @@ public class Node implements Comparable<Node> {
 
 	@Override
 	public String toString() {
-		return "<Node " + thisCount + " items: " + itemsChosen + " level: " + level + " profit: " + profit + " weight: " + weight + " bound: " + bound + ">";
+		return "<Node " + thisCount + ": items: " + itemsChosen + " level: " + level + " profit: " + profit + " weight: " + weight + " bound: " + bound + ">";
 	}
 	
 	public int getProfit() {

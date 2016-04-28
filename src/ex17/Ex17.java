@@ -68,7 +68,7 @@ public class Ex17 {
 		StringBuilder sb = buildTableDisplay();
 		
 	   // Display first Node
-		sb.append("Exploring ");
+		sb.append("\nBegin Exploration of the possibilities tree:\n\nExploring ");
 		Node firstNode = new Node(new ArrayList<Integer>(0), new ArrayList<Integer>(0), 0, 0, 0);
 		calculateBound(firstNode);
 		sb.append(firstNode);
@@ -84,41 +84,69 @@ public class Ex17 {
 		PriorityQueue<Node> q = new PriorityQueue<>();
 		while(true) {
 			// No choice option
-			if(noChoice.getWeight() < weightCapacity) {
+			sb.append("\n  Left child is ");
+			if(noChoice.getWeight() <= weightCapacity) {
 				calculateBound(noChoice);
-				sb.append("\nLeft child is ");
-				sb.append(noChoice);
 				q.add(noChoice);
-				sb.append("\n  Explore Further");
-			} else if (noChoice.getWeight() == weightCapacity){
-				sb.append("\n Hit capacity exactly, so don't explore further");
+				if (noChoice.getWeight() == weightCapacity){
+					sb.append(noChoice);
+					sb.append("\n    hit capacity exactly, so don't explore further");	
+				} else {
+					sb.append(noChoice);
+					sb.append("\n    Explore Further");
+				}
 			} else {
-				sb.append("\n  Pruned becuase too heavy");
+				noChoice.setBound(noChoice.getProfit());
+				sb.append(noChoice);
+				sb.append("\n    Pruned becuase too heavy");
 			}
 			
 			// choice option
+			sb.append("\n  Right child is ");
 			if(choice.getWeight() <= weightCapacity) {
 				calculateBound(choice);
-				sb.append("\nRight child is ");
-				sb.append(choice);
 				q.add(choice);
-			} else if (choice.getWeight() == weightCapacity){
-				sb.append("\n Hit capacity exactly, so don't explore further");
+				if (choice.getWeight() == weightCapacity){
+					if(q.peek() != choice) {
+						q.remove(); // Remove because there is something better
+					}
+					sb.append(choice);
+					sb.append("\n    hit capacity exactly, so don't explore further");	
+				} else {
+					sb.append(choice);
+					sb.append("\n    Explore Further");
+				}
 			} else {
-				sb.append("\n  Pruned becuase too heavy");
+				choice.setBound(choice.getProfit());
+				sb.append(choice);
+				sb.append("\n    pruned becuase too heavy");
 			}
 			
 			// Pursue highest bound
 			qChoice = q.remove();
-			sb.append("\n  Pursue higher bound Node ");
-			sb.append(qChoice.getThisCount());
-			sb.append("\n");
 			
-			if(qChoice.getLevel() == table.length) {
-				sb.append("\nWINNER: ");
+			// Best choice
+			if(qChoice.getWeight() == weightCapacity || qChoice.getLevel() == table.length) {
+				sb.append("\n    note achievable profit of ");
+				sb.append(qChoice.getProfit());
+				
+				// Prune remaining branches
+				while(!q.isEmpty()) {
+					Node prune = q.remove();
+					sb.append("\n\nExploring ");
+					sb.append(prune);
+					sb.append("\n    pruned, don't explore children because "
+							+ "bound " + prune.getBound() + " is smaller than known achievable profit " +  qChoice.getProfit());
+				}
+				sb.append("\n\nBest node: ");
 				sb.append(qChoice);
 				System.out.println(sb);
 				break;
+			} else {
+				sb.append("\n    note achievable profit of ");
+				sb.append(qChoice.getProfit());
+				sb.append("\n\nExploring ");
+				sb.append(qChoice);
 			}
 			
 			level = qChoice.getLevel() + 1;
