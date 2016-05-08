@@ -8,15 +8,25 @@ import java.util.Scanner;
 
 public class Ex17 {
 	private static int weightCapacity;
-	private static int[][] table;
+	private static float[][] table;
 	
 	/**
 	 * Driver of the program.
 	 * @param args Contains The full file path of the data file.
 	 */
 	public static void main(String[] args) {
+		Node.nodeCount = 1;
 		table = readDataFile(args);
 		branchBoundAlg();
+	}
+	
+	/**
+	 * Driver for unit tests.
+	 */
+	public static float testDriver(String[] args) {
+		Node.nodeCount = 1;
+		table = readDataFile(args);
+		return branchBoundAlg();
 	}
 	
 	/**
@@ -25,8 +35,8 @@ public class Ex17 {
 	 * @param args Used if file path is passed in through command line argument.
 	 * @return 2D array of data.
 	 */
-	private static int[][] readDataFile(String[] args) {
-		int[][] table = null;
+	private static float[][] readDataFile(String[] args) {
+		float[][] table = null;
 		
 		// Get data file
 		File dataFile = null;
@@ -38,11 +48,11 @@ public class Ex17 {
 			try {
 				input = new Scanner(dataFile);
 				weightCapacity = input.nextInt();
-				table = new int[input.nextInt()][3];
+				table = new float[input.nextInt()][3];
 				for(int i = 0; i < table.length; i++) {
-					int profit = input.nextInt();
-					int weight = input.nextInt();
-					int pPerWeight = Math.round(profit/weight);
+					float profit = input.nextInt();
+					float weight = input.nextInt();
+					float pPerWeight = profit/weight;
 					table[i][0] = profit;
 					table[i][1] = weight;
 					table[i][2] = pPerWeight;
@@ -63,7 +73,7 @@ public class Ex17 {
 	/**
 	 * The Branch & Bound 0-1 knapsack algorithm
 	 */
-	private static void branchBoundAlg() {
+	private static float branchBoundAlg() {
 		// Build the display for the table
 		StringBuilder sb = buildTableDisplay();
 		
@@ -141,7 +151,7 @@ public class Ex17 {
 				sb.append("\n\nBest node: ");
 				sb.append(qChoice);
 				System.out.println(sb);
-				break;
+				return qChoice.getProfit();
 			} else {
 				sb.append("\n    note achievable profit of ");
 				sb.append(qChoice.getProfit());
@@ -149,14 +159,14 @@ public class Ex17 {
 				sb.append(qChoice);
 			}
 			
-			level = qChoice.getLevel() + 1;
+			level = (int)qChoice.getLevel() + 1;
 			
 			// Create new no choice node
 			ArrayList<Integer> temp;
 			Node newC = null;
 			Node newNC = null;
-			int newProfit = 0;
-			int newWeight = 0;
+			float newProfit = 0;
+			float newWeight = 0;
 			newNC = new Node(qChoice.getItemsChosen(), null, level, qChoice.getProfit(), qChoice.getWeight());
 			temp = new ArrayList<>(qChoice.getItemsIgnored());
 			temp.add(level);
@@ -211,12 +221,12 @@ public class Ex17 {
 			}
 			
 			boolean skipItem = false;
-			int bound = node.getProfit();
-			int totalWeight = node.getWeight();
+			float bound = node.getProfit();
+			float totalWeight = node.getWeight();
 			for(int i = 0; i < table.length; i++) {
-				int profit = table[i][0];
-				int weight = table[i][1];
-				int pPerW = table[i][2];
+				float profit = table[i][0];
+				float weight = table[i][1];
+				float pPerW = table[i][2];
 				
 				// Skip chosen and ignored items
 				if(!chosen.isEmpty() || !ignored.isEmpty()) {

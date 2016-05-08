@@ -4,16 +4,16 @@ import java.lang.Comparable;
 import java.util.ArrayList;
 
 public class Node implements Comparable<Node> {
-	private static int nodeCount = 1;
+	protected static int nodeCount;
 	private ArrayList<Integer> itemsChosen;
 	private ArrayList<Integer> itemsIgnored;
-	private int thisCount;
-	private int level;
-	private int profit;
-	private int weight;
+	private float thisCount;
+	private float level;
+	private float profit;
+	private float weight;
 	private float bound;
 	
-	public Node(ArrayList<Integer> itemsChosen, ArrayList<Integer> itemsIgnored, int level, int price, int weight) {
+	public Node(ArrayList<Integer> itemsChosen, ArrayList<Integer> itemsIgnored, float level, float price, float weight) {
 		this.itemsChosen = itemsChosen;
 		this.itemsIgnored = itemsIgnored;
 		thisCount = nodeCount;
@@ -45,11 +45,11 @@ public class Node implements Comparable<Node> {
 		return "<Node " + thisCount + ": items: " + itemsChosen + " level: " + level + " profit: " + profit + " weight: " + weight + " bound: " + bound + ">";
 	}
 	
-	public int getProfit() {
+	public float getProfit() {
 		return profit;
 	}
 
-	public int getWeight() {
+	public float getWeight() {
 		return weight;
 	}
 
@@ -57,11 +57,11 @@ public class Node implements Comparable<Node> {
 		return bound;
 	}
 	
-	public void setProfit(int profit) {
+	public void setProfit(float profit) {
 		this.profit = profit;
 	}
 	
-	public void setWeight(int weight) {
+	public void setWeight(float weight) {
 		this.weight = weight;
 	}
 	
@@ -77,11 +77,11 @@ public class Node implements Comparable<Node> {
 		return itemsIgnored;
 	}
 	
-	public int getLevel() {
+	public float getLevel() {
 		return level;
 	}
 
-	public int getThisCount() {
+	public float getThisCount() {
 		return thisCount;
 	}
 	
@@ -93,11 +93,11 @@ public class Node implements Comparable<Node> {
 		this.itemsIgnored = itemsIgnored;
 	}
 
-	public void setLevel(int level) {
+	public void setLevel(float level) {
 		this.level = level;
 	}
 
-	public void setThisCount(int thisCount) {
+	public void setThisCount(float thisCount) {
 		this.thisCount = thisCount;
 	}
 }
